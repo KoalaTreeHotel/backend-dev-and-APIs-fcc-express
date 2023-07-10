@@ -34,6 +34,7 @@ app.get("/", function (req, res) {
 });
 
 // Serve a JSON specific route (and make it uppercase based on .env variable)
+// Needs .env file (see .env.example)
 app.get("/json", (req, res) => {
     let myMsg = "Hello json";
     if (process.env.MESSAGE_STYLE === "uppercase") {
