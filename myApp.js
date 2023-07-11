@@ -3,8 +3,8 @@ require("dotenv").config();
 let express = require("express");
 let app = express();
 
-const path = require("path");
-const __dirname = path.resolve(path.dirname(""));
+// const path = require("path");
+// const __dirname = path.resolve(path.dirname(""));
 
 // Mount the logger middleware
 app.use(function middleware(req, res, next) {
