@@ -45,10 +45,19 @@ app.get("/json", (req, res) => {
     });
 });
 
+// Chaining middleware together. 
+// Endpoint "/now" returns the current JSON time.
+app.get("/now", (req, res, next) => {
+    req.time = new Date().toString();
+    next();
+}, (req, res) => {
+    res.json({ time: req.time });
+});
 
-
-
-
+// Getting a route parameter input from the user / client
+// eg: 127.0.0.1/tree/echo  ->  {"echo":"tree"}
+app.get("/:word/echo", (req, res) =>
+    res.send({ "echo": req.params.word }));
 
 
 
