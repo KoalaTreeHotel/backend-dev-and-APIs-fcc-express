@@ -5,6 +5,18 @@ let app = express();
 // dotenv module required to access .env environment variables (used in step 5)
 require("dotenv").config();
 
+// body parser middleware to decode data from the http verb POST
+let bodyParser = require("body-parser");
+
+//(11) USE BODY-PARSER TO PARSE POST REQUESTS: Besides GET, there is another common HTTP verb, it is POST. POST is the default method used to send client data with HTML forms. In REST convention, POST is used to send data to create new items in the database (a new user, or a new blog post). You don’t have a database in this project, but you are going to learn how to handle POST requests anyway.
+// In these kind of requests, the data doesn’t appear in the URL, it is hidden in the request body. The body is a part of the HTTP request, also called the payload. Even though the data is not visible in the URL, this does not mean that it is private
+// Used for POST http verbs
+// As usual, the middleware must be mounted before all the routes that depend on it
+// User data POSTed in body, not in URL
+let middlewareParse = bodyParser.urlencoded({ extended: false });
+app.use(middlewareParse);
+
+
 //(7) IMPLEMENT A ROUTE-LEVEL REQUEST LOGGER MIDDLEWARE: Middleware functions are functions that take 3 arguments: the request object, the response object, and the next function in the application’s request-response cycle. These functions execute some code that can have side effects on the app, and usually add information to the request or response objects. They can also end the cycle by sending a response when some condition is met. If they don’t send the response when they are done, they start the execution of the next function in the stack. This triggers calling the 3rd argument, next(). 
 // Note: Express evaluates functions in the order they appear in the code. This is true for middleware too. If you want it to work for all the routes, it should be mounted before them
 // Remember, from the 4th step: A middleware needs to be mounted using the method app.use(path, middlewareFunction). The first path argument is optional. If you don’t pass it, the middleware will be executed for all requests.
@@ -47,9 +59,12 @@ app.use("/public", express.static(__dirname + "/public"));
 
 
 //(5) SERVE JSON ON A SPECIFIC ROUTE: Create a simple API by creating a route that responds with JSON data at the path /json. Use app.get() to serve the JSON object {"message": "Hello json"}.
-// app.get("/json", function(req, res) {
-//     res.json({"message": "Hello json"});
-// });  
+/*
+app.get("/json", function(req, res) {
+    res.json({"message": "Hello json"});
+});  
+*/
+
 
 //(6) USE THE .ENV FILE: Read variable MESSAGE_STYLE's value from .env via "process.env.VARIABLE" (requires dotenv declared above)
 app.get("/json", function (req, res) {
@@ -61,7 +76,9 @@ app.get("/json", function (req, res) {
     }
 });
 
+
 //(7) is at the top
+
 
 //(8) CHAIN MIDDLEWARE TO CREATE A TIME SERVER: Middleware can be mounted at a specific route using app.METHOD(path, middlewareFunction). Middleware can also be chained within a route definition. This is a middleware stack.
 app.get("/now", 
@@ -75,9 +92,46 @@ app.get("/now",
         res.json({ time: req.time });
     });
 
-//(9) GET ROUTE PARAMETER INPUT FROM THE CLIENT: 
+
+//(9) GET ROUTE PARAMETER INPUT FROM THE CLIENT: When building an API, we have to allow users to communicate to us what they want to get from our service. For example, if the client is requesting information about a user stored in the database, they need a way to let us know which user they're interested in. One possible way to achieve this result is by using route parameters. Route parameters are named segments of the URL, delimited by slashes (/). Each segment captures the value of the part of the URL which matches its position. The captured values can be found in the req.params object. 
+// Parameters / values are prefixed with a colon(:) in the URL
+//    route_path: '/user/:userId/book/:bookId'
+//    actual_request_URL: '/user/546/book/6754'
+//    req.params: {userId: '546', bookId: '6754'}
+app.get("/:word/echo", 
+    (req, res) => {
+        let stringToEcho = req.params.word;
+        res.send({ "echo" : stringToEcho });
+        // NB: either res.send() or res.json() can be used
+        // res.json({ "echo" : stringToEcho });
+        // The methods are identical when an object or array is passed, but res.json() will also convert non-objects, such as null and undefined, which are not valid JSON.
+    });
 
 
+//(10) GET QUERY PARAMETER INPUT FROM THE CLIENT: Another common way to get input from the client is by encoding the data after the route path, using a query string. The query string is delimited by a question mark (?), and includes field=value couples. Each couple is separated by an ampersand (&). Express can parse the data from the query string, and populate the object req.query. Some characters, like the percent (%), cannot be in URLs and have to be encoded in a different format before you can send them. If you use the API from JavaScript, you can use specific methods to encode/decode these characters.
+// Keys / values passed in URL via query string
+// ?            - start of query string
+// field=value  - data / items 
+// &            - sepearates the different data / items
+//    route_path: '/library'
+//    actual_request_URL: '/library?userId=546&bookId=6754'
+//    req.query: {userId: '546', bookId: '6754'}
+// http://127.0.0.1:3000/name?first=Bill&last=Gates
+/*
+-- This works but code below is cleaner as it allows us to chain different verb 
+-- handlers on the same route. 
+app.get("/name", (req, res) =>
+    res.send({ "name": `${req.query.first} ${req.query.last}` }));
+*/
+app.route("/name").get((req, res) => {
+    res.json({ "name": `${req.query.first} ${req.query.last}` });
+});
+
+
+//(11) is at the top
+
+
+//(12)
 
 
 
