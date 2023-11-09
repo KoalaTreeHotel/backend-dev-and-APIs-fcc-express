@@ -8,7 +8,7 @@ let app = express();
 // dotenv module required to access .env environment variables (used in step 5)
 require("dotenv").config();
 
-// body parser middleware to decode data from the http verb POST
+// body parser middleware to decode data from the http verb POST (from the request body)
 let bodyParser = require("body-parser");
 
 //(11) USE BODY-PARSER TO PARSE POST REQUESTS: Besides GET, there is another common HTTP verb, it is POST. POST is the default method used to send client data with HTML forms. In REST convention, POST is used to send data to create new items in the database (a new user, or a new blog post). You don’t have a database in this project, but you are going to learn how to handle POST requests anyway.
@@ -20,12 +20,13 @@ let middlewareParse = bodyParser.urlencoded({ extended: false });
 app.use(middlewareParse);
 
 
-//(7) IMPLEMENT A ROUTE-LEVEL REQUEST LOGGER MIDDLEWARE: Middleware functions are functions that take 3 arguments: the request object, the response object, and the next function in the application’s request-response cycle. These functions execute some code that can have side effects on the app, and usually add information to the request or response objects. They can also end the cycle by sending a response when some condition is met. If they don’t send the response when they are done, they start the execution of the next function in the stack. This triggers calling the 3rd argument, next().
+//(7) IMPLEMENT A ROUTE-LEVEL REQUEST LOGGER MIDDLEWARE: Middleware functions are functions that take THREE arguments: the request object (req), the response object (res), and the next function (next()) in the application’s request-response cycle. These functions execute some code that can have side effects on the app, and usually add information to the request or response objects. They can also end the cycle by sending a response when some condition is met. If they don’t send the response when they are done, they start the execution of the next function in the stack. This triggers calling the 3rd argument, next().
 // Note: Express evaluates functions in the order they appear in the code. This is true for middleware too. If you want it to work for all the routes, it should be mounted before them
-// Remember, from the 4th step: A middleware needs to be mounted using the method app.use(path, middlewareFunction). The first path argument is optional. If you don’t pass it, the middleware will be executed for all requests.
+// Remember, as mentioned in the 4th step: A middleware needs to be mounted using the method app.use(path, middlewareFunction). The first path argument is optional. If you don’t pass it, the middleware will be executed for all requests.
+// Middleware is created using the app.use() function.
+
 // Prints request "method path - ipAddress" -> "GET /json - ::ffff:127.0.0.1"
 app.use(function middleware(req, res, next) {
-    // let myString = req.method + " " + req.path + " - " + req.ip;
     let myString = `${req.method} ${req.path} - ${req.ip}`;
     console.log(myString);
     // Call the next function in the line, must do this or the server will be stuck forever
@@ -33,7 +34,7 @@ app.use(function middleware(req, res, next) {
 });
 
 
-//(1) MEET THE NODE CONSOLE: write info to the console
+//(1) MEET THE NODE CONSOLE: write info to the console. "__dirname" points to the dir of the current executing script.
 console.log("Hello World");
 console.log("dirname = " + __dirname);
 
