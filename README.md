@@ -1,7 +1,7 @@
-# Basic Node and Express
+# Node and Express
 
-This is the boilerplate code for the Basic Node and Express Challenges. Instructions for working on these challenges start at https://www.freecodecamp.org/learn/apis-and-microservices/basic-node-and-express/  
+Node and Express lessons. FCC Backend API Course.
 
+Instructions:
 
-Start:
-npm start (to run the package.json "start" script: "node server.js")  
+- npm start
