@@ -1,6 +1,6 @@
 # Node and Express
 
-Node and Express lessons. FCC Backend API Course.
+Node and Express lessons. FCC Backend API course.
 
 Instructions:
 
